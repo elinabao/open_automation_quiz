@@ -75,15 +75,13 @@ public class TestTestng{
     /*Search key word from search result page*/
     @Test
     public void test2() throws Exception{
-        String keyWord="Selenium";
+        String keyWord="Selenium 查询定位";
         //Back to the previous page
         driver.navigate().back();
         driver.switchTo().frame(returnIframe(driver));
-
+        Thread.sleep(3000);
         //Find the search box
         try {
-            Thread.sleep(3000);
-
             WebElement input = driver.findElement(By.xpath("//*[@class ='b_searchbox'][@id='sb_form_q']"));
             input.clear();
             input.sendKeys(keyWord);
@@ -101,7 +99,7 @@ public class TestTestng{
             driver.switchTo().frame(returnIframe(driver));
 			/* String js = "window.scrollTo(0,document.body.scrollHeight)";
 			((JavascriptExecutor) driver).executeAsyncScript(js);*/
-            WebElement subPage=driver.findElement(By.xpath("//*[@class='b_pag']/nav/ul/li["+pageIndex+"]"));
+            WebElement subPage=driver.findElement(By.xpath("//*[@class='b_pag']")).findElement(By.linkText("2"));
             subPage.click();
         }catch (org.openqa.selenium.NoSuchElementException ex){
             System.out.println("失败：搜索结果页面未找到分页");
@@ -125,7 +123,7 @@ public class TestTestng{
     @AfterClass
     public  void quitBrowser(){
         System.out.print("quitBrowser");
-        driver.quit();
+        //driver.quit();
     }
     public void showSearchResult(List<WebElement> searchResult){
 
@@ -163,8 +161,9 @@ public class TestTestng{
             System.out.println(key+"\t--->"+value);
         }
     }
-    public static WebElement  returnIframe(WebDriver driver){
+    public static WebElement  returnIframe(WebDriver driver) throws InterruptedException {
         driver.switchTo().defaultContent();
+        Thread.sleep(3000);
         WebElement iframe = driver.findElement(By.xpath("//*[@name='bing']"));
         return iframe;
     }
