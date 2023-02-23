@@ -1,9 +1,9 @@
 package cn.cucumber.runner;
 
-
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.testng.Assert;
 import org.testng.annotations.*;
 import org.openqa.selenium.chrome.ChromeDriver;
 
@@ -29,6 +29,7 @@ public class TestTestng{
     /*Search key word from Homepage*/
     @Test
     public void test1() throws Exception{
+
         String keyWord ="包娜";
         //Homepage
         driver.switchTo().frame(returnIframe(driver));
@@ -40,7 +41,7 @@ public class TestTestng{
             input.sendKeys(keyWord);
             submitButton.click();
         }catch (org.openqa.selenium.NoSuchElementException ex){
-            System.out.println("失败：首页加载失败");
+            Assert.assertFalse(true,"失败：首页加载失败");
         }
 
         //Click subpage in Search result page
@@ -48,34 +49,34 @@ public class TestTestng{
             //Navigate to iframe
             Thread.sleep(5000);
             driver.switchTo().frame(returnIframe(driver));
-			/* String js = "window.scrollTo(0,document.body.scrollHeight)";
-			((JavascriptExecutor) driver).executeAsyncScript(js);*/
             WebElement subPage=driver.findElement(By.xpath("//*[@class='b_pag']/nav/ul/li["+pageIndex+"]"));
             subPage.click();
         }catch (org.openqa.selenium.NoSuchElementException ex){
-            System.out.println("失败：搜索结果页面未找到分页");
+            Assert.assertFalse(true,"失败：点击分页失败");
         }
 
         //Display the result
         try{
-            Thread.sleep(5000);
+            Thread.sleep(3000);
             //Navigate to iframe
             driver.switchTo().frame( returnIframe(driver));
-            List<WebElement> resultDiv = driver.findElements(By.xpath("//*[@id='b_results']/li[@class='b_algo']/div[1]/a"));
+            List<WebElement> resultDiv = driver.findElements(By.xpath("//*[@id='b_results']/li[@class='b_algo']/div[1]/h2/a"));
             if(resultDiv.size() !=0){
                 //Display the sum of result
                 showSearchResult(resultDiv);
             }
 
         }catch (org.openqa.selenium.NoSuchElementException ex){
-            System.out.println("失败：遍历测试结果时出错了");
+            Assert.assertFalse(true,"失败：遍历页面失败");
         }
     }
 
     /*Search key word from search result page*/
     @Test
     public void test2() throws Exception{
-        String keyWord="Selenium 查询定位";
+        Random r = new Random();
+        int i1 = r.nextInt(10);
+        String keyWord="Selenium "+i1;
         //Back to the previous page
         driver.navigate().back();
         driver.switchTo().frame(returnIframe(driver));
@@ -89,20 +90,18 @@ public class TestTestng{
             WebElement submitButton = driver.findElement(By.xpath("//*[@class='b_searchboxSubmit']"));
             submitButton.click();
         }catch (org.openqa.selenium.NoSuchElementException ex){
-            System.out.println("失败：搜索页面加载失败");
+            Assert.assertFalse(true,"失败：第二个关键字搜索失败");
         }
 
         //Click subpage in Search result page
         try{
             //Navigate to iframe
-            Thread.sleep(5000);
+            Thread.sleep(3000);
             driver.switchTo().frame(returnIframe(driver));
-			/* String js = "window.scrollTo(0,document.body.scrollHeight)";
-			((JavascriptExecutor) driver).executeAsyncScript(js);*/
             WebElement subPage=driver.findElement(By.xpath("//*[@class='b_pag']")).findElement(By.linkText("2"));
             subPage.click();
         }catch (org.openqa.selenium.NoSuchElementException ex){
-            System.out.println("失败：搜索结果页面未找到分页");
+            Assert.assertFalse(true,"失败：第二次搜索结果页面未找到分页");
         }
 
         //Display the result
@@ -110,20 +109,19 @@ public class TestTestng{
             Thread.sleep(5000);
             //Navigate to iframe
             driver.switchTo().frame( returnIframe(driver));
-            List<WebElement> resultDiv = driver.findElements(By.xpath("//*[@id='b_results']/li[@class='b_algo']/div[1]/a"));
+            List<WebElement> resultDiv = driver.findElements(By.xpath("//*[@id='b_results']/li[@class='b_algo']/div[1]/h2/a"));
             if(resultDiv.size() !=0){
                 //Display the sum of result
                 showSearchResult(resultDiv);
             }
 
         }catch (org.openqa.selenium.NoSuchElementException ex){
-            System.out.println("失败：遍历测试结果时出错了");
+            Assert.assertFalse(true,"失败：第二次遍历测试结果时出错了");
         }
     }
     @AfterClass
     public  void quitBrowser(){
-        System.out.print("quitBrowser");
-        //driver.quit();
+        driver.quit();
     }
     public void showSearchResult(List<WebElement> searchResult){
 
@@ -133,7 +131,7 @@ public class TestTestng{
         while (iterator1.hasNext()){
             WebElement item = (WebElement) iterator1.next();
             String name = item.getText();
-            String href =item.getAttribute("href");
+            String href = item.getAttribute("href");
             System.out.println(name+"\t--->"+href);
         }
 
